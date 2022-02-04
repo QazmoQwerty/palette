@@ -1,0 +1,2 @@
+#!/bin/bash
+BSPWM_SOCKET=/tmp/palette_socket bspc $@

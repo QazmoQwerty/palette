@@ -1,0 +1,11 @@
+[
+    {
+        "description": "open path in new terminal",
+        "exec": "$HOME/.config/rofi/open-in-terminal.sh"
+    },
+    {
+        "description": "start alacritty",
+        "keybinding": "super+v",
+        "exec": "alacritty"
+    }
+]
