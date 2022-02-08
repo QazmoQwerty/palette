@@ -16,7 +16,7 @@ class Rofi:
         with open(self._configuration.rofi_script_input_path, 'wb') as file:
             file.write(self._get_rofi_input(commands))
         env_copy = os.environ.copy()
-        env_copy['PALETTE_SOCKET_PATH'] = self._configuration.socket_path
+        env_copy['PALETTE_SOCKET'] = self._configuration.socket_path
         env_copy['PALETTE_ROFI_INPUT_PATH'] = self._configuration.rofi_script_input_path
         subprocess.Popen(['rofi', '-modi', f'palette:palette-rofi-script', '-show', 'palette'], env=env_copy)
     

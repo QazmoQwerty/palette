@@ -10,8 +10,8 @@ if [[ -z "${PALETTE_ROFI_INPUT_PATH}" ]]; then
     usage-error "PALETTE_ROFI_INPUT_PATH is not set." >&2
 fi
 
-if [[ -z "${PALETTE_SOCKET_PATH}" ]]; then
-    usage-error "PALETTE_SOCKET_PATH is not set." >&2
+if [[ -z "${PALETTE_SOCKET}" ]]; then
+    usage-error "PALETTE_SOCKET is not set." >&2
 fi
 
 case $ROFI_RETV in
@@ -20,6 +20,6 @@ case $ROFI_RETV in
         rm ${PALETTE_ROFI_INPUT_PATH}
         ;;
     1)
-        coproc ( BSPWM_SOCKET=${PALETTE_SOCKET_PATH} bspc __execute $ROFI_INFO > /dev/null 2>1 )
+        coproc ( palette __execute $ROFI_INFO > /dev/null 2>1 )
         ;;
 esac
