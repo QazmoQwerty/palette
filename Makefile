@@ -10,7 +10,7 @@ lint: ## Run mypy
 
 .PHONY: test
 test: ## Run a sanity test
-	python3 -m libpalette.scripts.main -c examples/simple-example.json --backend none --socket /tmp/test_palette_socket
+	python3 -m libpalette.scripts.main -c examples/simple-example.yml --backend none --socket /tmp/test_palette_socket --verbose
 
 .PHONY: build
 build: ## Build the .whl file

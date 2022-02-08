@@ -1,0 +1,15 @@
+rofi:
+  window_width: 91
+
+commands:
+  -
+    description: start file explorer
+    exec: nemo
+  -
+    description: start firefox
+    exec: nemo,
+    meta: web browser
+  -
+    description: start alacritty
+    keybinding: super+v
+    exec: alacritty

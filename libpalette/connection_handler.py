@@ -3,12 +3,13 @@ import subprocess
 from typing import Callable, List
 
 from libpalette.rofi import Rofi
+from libpalette.logger import Logger
 from libpalette.command import CommandId
 from libpalette.connection import Connection
-from libpalette.configuration import Configuration
 from libpalette.commands_manager import CommandsManager
 from libpalette.keybindings_manager import KeybindingsManager
 from libpalette.exceptions import PaletteError, QuitException, CommandNotFoundError
+from libpalette.configuration import ConfigurationFactory, set_configuration_singleton
 
 class ConnectionHandler:
     def handle_connection(self, connection: Connection) -> None:
@@ -32,13 +33,15 @@ class PaletteConnectionHandler(ConnectionHandler):
     _commands_manager: CommandsManager
     _keybindings_manager: KeybindingsManager
     _rofi: Rofi
-    _configuration: Configuration
+    _configuration_factory: ConfigurationFactory
+    _logger: Logger
 
-    def __init__(self, commands_manager: CommandsManager, keybindings_manager: KeybindingsManager, configuration: Configuration) -> None:
+    def __init__(self, logger: Logger, commands_manager: CommandsManager, keybindings_manager: KeybindingsManager, configuration_factory: ConfigurationFactory, rofi: Rofi) -> None:
         self._commands_manager = commands_manager
         self._keybindings_manager = keybindings_manager
-        self._rofi = Rofi(configuration)
-        self._configuration = configuration
+        self._rofi = rofi
+        self._configuration_factory = configuration_factory
+        self._logger = logger
     
     def _handle_no_arguments(self, args: List[str], connection: Connection) -> None:
         connection.send_error('No arguments given')
@@ -74,6 +77,7 @@ class PaletteConnectionHandler(ConnectionHandler):
             connection.send_error('Invalid arguments (expected 0)')
 
     def _handle_reload(self, args: List[str], connection: Connection) -> None:
+        set_configuration_singleton(self._configuration_factory.create())
         self._commands_manager.reload()
         self._keybindings_manager.load(self._commands_manager.get_commands().values())
     
@@ -91,8 +95,7 @@ class PaletteConnectionHandler(ConnectionHandler):
     
     def handle_connection(self, connection: Connection) -> None:
         args = connection.recv_args()
-        if self._configuration.verbose:
-            print('Args:', args)
+        self._logger.log('Args:', args)
         try:
             self._get_handler(args)(args, connection)
         except PaletteError as e:

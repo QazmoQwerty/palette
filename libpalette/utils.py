@@ -6,6 +6,7 @@ def try_remove_file(path: str) -> None:
         os.unlink(path)
     except OSError:
         if os.path.exists(path):
+            # TODO - use the logger
             print(f'Error: could not unlink file at path {path}')
 
 def remove_whitespace(string: str) -> str:

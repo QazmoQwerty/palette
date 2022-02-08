@@ -3,7 +3,6 @@ from typing import Iterable, Optional, overload
 from libpalette.command import Command
 from libpalette.utils import try_remove_file
 from libpalette.sxhkd_process import SxhkdProcess
-from libpalette.configuration import Configuration
 from libpalette.keybindings_manager import KeybindingsManager
 
 class Sxhkd(KeybindingsManager):

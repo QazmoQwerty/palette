@@ -1,19 +1,51 @@
-from typing import NamedTuple
+from typing import Dict
 
-class Configuration(NamedTuple):
-    commands_path: str
-    keybindings_backend: str = 'none'
-    verbose: bool = False
-    socket_path: str = '/tmp/palette_socket'
-    rofi_script_input_path: str = '/tmp/palette-rofi-script_input'
+import strictyaml
+from strictyaml import Map, Str, Int, Seq, Optional, Bool, YAML
 
-    # TODO - more rofi customization
-    opposite_align_commands_and_shortcuts: bool = True
-    rofi_window_width: int  = 91
+g_configuration_singleton = None
 
-    # NOTE - modifier icons are not recommended as they are pretty ugly at the moment.
-    use_modifier_icons:  bool = False
-    ctrl_modifier_icon:  str  = '\ufb33'
-    shift_modifier_icon: str  = '\ufb35'
-    super_modifier_icon: str  = '\ufb32'
-    alt_modifier_icon:   str  = '\ufb34'
+def get_configuration() -> YAML:
+    assert g_configuration_singleton is not None
+    return g_configuration_singleton
+
+def set_configuration_singleton(value: YAML) -> None:
+    global g_configuration_singleton
+    g_configuration_singleton = value
+
+class ConfigurationFactory:
+    _path: str
+
+    def __init__(self, path: str) -> None:
+        self._path = path
+
+        def subcategory(name: str, inner_schema: Dict[Optional, str]) -> dict:
+            defaults = {i.key: i.default for i in inner_schema.keys()}
+            return { Optional(name, default = defaults): Map(inner_schema)}
+
+        self._schema = Map({
+            **subcategory('rofi', {
+                Optional('opposite_align_commands_and_shortcuts', default = True): Bool(),
+                Optional('window_width', default = 91): Int(),
+                **subcategory('mode_script', {
+                    Optional('input_path', default = "/tmp/palette-rofi-script_input"): Str(),
+                }),
+            }),
+            **subcategory('modifier_icons', {
+                Optional('is_active', default = False): Bool(),
+                Optional('ctrl',  default = "\ufb33"): Str(),
+                Optional('shift', default = "\ufb35"): Str(),
+                Optional('super', default = "\ufb32"): Str(),
+                Optional('alt',   default = "\ufb34"): Str(),
+            }),
+            "commands": Seq(Map({
+                'description': Str(),
+                'exec': Str(),
+                Optional('keybinding'): Str(),
+                Optional('meta'): Str(),
+            }))
+        })
+
+    def create(self) -> YAML:
+        with open(self._path) as file:
+            return strictyaml.load(file.read(), schema=self._schema)
