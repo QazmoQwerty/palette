@@ -1,4 +1,4 @@
-% PALETTE(1) Palette 0.2.1
+% PALETTE(1) Palette 0.3.0
 % Shalev Don Meiri
 % February 4, 2022
 
