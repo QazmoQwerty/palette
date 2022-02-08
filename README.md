@@ -63,6 +63,12 @@ commands:
              the keybindings will also be updated accordingly.
 ```
 
+## Requirements
+
+* rofi
+
+* sxhkd
+
 ## Installation
 
 Install from pypi:
@@ -73,9 +79,10 @@ sudo pip3 install commandpalette
 
 Build and install from source:
 
-```
+```sh
 git clone https://github.com/QazmoQwerty/palette
 cd palette
-make build
-sudo make install
+sudo pip3 install -r requirements.txt
+python3 -m build
+sudo python3 -m pip install dist/commandpalette*.whl
 ```
