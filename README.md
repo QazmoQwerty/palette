@@ -2,6 +2,8 @@
 
 A command palette for your operating system
 
+![Demo](demo.gif)
+
 ## Description
 
 *Palette* holds a list of easy-access commands and when prompted displays a searchable cheat-sheet including the keyboard shortcut each command is bound to.
