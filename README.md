@@ -67,6 +67,8 @@ commands:
 
 * rofi
 
+* bspwm
+
 * sxhkd
 
 ## Installation
