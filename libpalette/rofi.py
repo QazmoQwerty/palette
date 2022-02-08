@@ -59,8 +59,6 @@ class Rofi:
 
     def _get_rofi_input(self, commands: Dict[CommandId, Command]) -> bytes:
         return '\n'.join([
-            "\0prompt\x1fTODO - Choose a custom prompt",
-            "\0message\x1fTODO - Choose a custom message",
             "\0no-custom\x1ftrue",
             *map(self._command_rofi_input, self._properly_sorted(commands.values()))
         ]).encode()
