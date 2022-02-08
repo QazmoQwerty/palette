@@ -15,12 +15,18 @@ class Rofi:
     def show_palette(self, commands: Dict[CommandId, Command]) -> None:
         with open(get_configuration()['rofi']['mode_script']['input_path'].data, 'wb') as file:
             file.write(self._get_rofi_input(commands))
+        
         env_copy = os.environ.copy()
-        print(self._socket_path)
-        print(get_configuration()['rofi']['mode_script']['input_path'].data)
         env_copy['PALETTE_SOCKET'] = self._socket_path
         env_copy['PALETTE_ROFI_INPUT_PATH'] = get_configuration()['rofi']['mode_script']['input_path'].data
-        subprocess.Popen(['rofi', '-modi', f'palette:palette-rofi-script', '-show', 'palette'], env=env_copy)
+
+        arguments = ['rofi', '-modi', f'palette:palette-rofi-script', '-show', 'palette']
+        if get_configuration()['rofi']['additional_arguments'].data is not None:
+            arguments += get_configuration()['rofi']['additional_arguments'].data
+        
+        print(repr(arguments))
+
+        subprocess.Popen(arguments, env=env_copy)
     
     def _opposite_align(self, left: str, right: str, length: int) -> str:
         return left + ' ' * (length - len(right) - len(left)) + right

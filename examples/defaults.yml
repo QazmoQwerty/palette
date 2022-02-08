@@ -28,6 +28,12 @@ rofi:
   mode_script:
     input_path: "/tmp/palette_rofi_script_input"
 
+  # Pass additional command-line arguments directly to Rofi - use wisely.
+  # By default this is empty, but heres a simple example for you which sets the theme to 'Arc':
+  additional_arguments:
+    - "-theme"
+    - "Arc"
+
 commands:
   # description: A string describing the command.
   # exec: The string to execute with `sh -c EXEC_STRING` whenever the command is run.

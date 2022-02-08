@@ -1,7 +1,7 @@
 from typing import Dict
 
 import strictyaml
-from strictyaml import Map, Str, Int, Seq, Optional, Bool, YAML
+from strictyaml import Map, Str, Int, Seq, Optional, Bool, YAML, EmptyList
 
 g_configuration_singleton = None
 
@@ -27,6 +27,7 @@ class ConfigurationFactory:
             **subcategory('rofi', {
                 Optional('opposite_align_commands_and_shortcuts', default = False): Bool(),
                 Optional('window_width', default = 91): Int(),
+                Optional('additional_arguments', default = []): EmptyList() | Seq(Str()),
                 **subcategory('mode_script', {
                     Optional('input_path', default = "/tmp/palette_rofi_script_input"): Str(),
                 }),
