@@ -59,6 +59,7 @@ class PaletteConnectionHandler(ConnectionHandler):
     def _handle_execute(self, args: List[str], connection: Connection) -> None:
         if len(args) == 1:
             connection.send_error('Invalid number of (expected 1)')
+            return
         try:
             command_id = CommandId(args[1])
         except ValueError:
