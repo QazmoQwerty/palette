@@ -41,4 +41,4 @@ class CommandsManager:
         self._commands = {}
         with open(self._commands_json_path, 'r') as file:
             for i in json.load(file):
-                self.add_command(self._command_factory.create(i['description'], i.get('keybinding'), i['exec']))
+                self.add_command(self._command_factory.create(i['description'], i.get('keybinding'), i['exec'], i.get('meta')))

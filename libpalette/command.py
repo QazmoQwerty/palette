@@ -48,6 +48,7 @@ class Command:
     exec_string: str
     identifier: CommandId
     keybinding: Optional[str] = None
+    metadata: Optional[str] = None # invisible search terms
     last_used: datetime.datetime = datetime.datetime.min
 
 class CommandFactory:
@@ -56,5 +57,11 @@ class CommandFactory:
     def __init__(self, id_factory: CommandIdFactory) -> None:
         self._id_factory = id_factory
     
-    def create(self, description: str, keybinding: Optional[str], exec_string: str, identifier: Optional[Union[int, str]] = None) -> Command:
-        return Command(description, exec_string, self._id_factory.create(identifier), keybinding)
+    def create(self, description: str, keybinding: Optional[str], exec_string: str, metadata: Optional[str], identifier: Optional[Union[int, str]] = None) -> Command:
+        return Command(
+            description,
+            exec_string,
+            self._id_factory.create(identifier),
+            keybinding,
+            metadata
+        )

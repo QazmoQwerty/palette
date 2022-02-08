@@ -49,8 +49,8 @@ class Rofi:
         )
     
     def _command_rofi_input(self, command: Command) -> str:
-        # TODO - add `meta` tag (b'\x1fmeta\x1fSOME_META')
-        return f'{self._command_rofi_description(command)}\0info\x1f{command.identifier}'
+        metadata = f'\x1fmeta\x1f{command.metadata}' if command.metadata else ''
+        return f'{self._command_rofi_description(command)}\0info\x1f{command.identifier}' + metadata
 
     def _properly_sorted(self, commands: Iterable[Command]) -> List[Command]:
         """Sorts the commands first by their last used time, and then by lexical order"""
