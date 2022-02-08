@@ -24,7 +24,7 @@ commands:
     help   - Show this help message and exit.
     show   - Show the command palette.
     quit   - Ask paletted to suicide.
-    reload - Reload the commands json file. 
+    reload - Reload the configuration YAML file. 
              If a keybindings backend is running, 
              the keybindings will also be updated accordingly.
 """

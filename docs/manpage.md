@@ -33,32 +33,38 @@ Palette runs as a daemon (`paletted`), and is controlled through `palette` which
 -V, \--verbose
 :   Enable verbose output.
 
--c, \--commands
-:   Path to the json file which contains all the commands - this field is mandatory.
+-c, \--config
+:   Configuration YAML file path (defaults to "$HOME/.config/palette/palette.yml").
 
 -s, \--socket
 :   Socket to listen for incoming connections.
 
 -b, \--backend
 :   Backend to use for keybindings management.
-    Options are {`sxhkd`, `none`}, default is `none`.
+    Options are {`sxhkd`, `none`}, default is `sxhkd`.
+
+\--validate
+:   Validate configuration file and exit
 
 ## PALETTE
 
 `palette` controls the `paletted` daemon by communication with it through a socket.
 
+help
+:   Show help message and exit.
+
 show
-:    Show the command palette.
+:   Show the command palette.
 
 quit
 :   Ask `paletted` to suicide.
 
 reload
-:   Reload the commands json file. If a keybindings backend is running, the keybindings will also be updated accordingly.
+:   Reload the configuration YAML file. If a keybindings backend is running, the keybindings will also be updated accordingly.
 
 ## CONFIGURING
 
-*Palette* is configured through a JSON file, with each command containing a *"description"*, *"exec"* string, and an optional *keybinding*:
+*Palette* is configured through a YAML file, with each command containing a *description*, *exec* string, an optional *keybinding*, and optional *meta* keywords:
 
 ```
 description: A string describing the command.

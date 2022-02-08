@@ -1,5 +1,4 @@
-import json
-from typing import Dict, Optional, Iterable
+from typing import Dict, Optional
 
 from libpalette.configuration import get_configuration
 from libpalette.command import Command, CommandId, CommandFactory, CommandIdFactory

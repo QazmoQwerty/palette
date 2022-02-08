@@ -18,23 +18,29 @@ from libpalette.configuration import ConfigurationFactory, set_configuration_sin
 
 class CmdArguments(NamedTuple):
     config_path: Optional[str]
-    keybindings_backend: Optional[str]
-    socket_path: Optional[str]
+    keybindings_backend: str
+    socket_path: str
     verbose: bool
     validate_config: bool
+
+def get_default_config_path() -> str:
+    home = os.getenv("HOME")
+    assert home is not None
+    return f'{home}/.config/palette/palette.yml'
 
 def parse_arguments() -> CmdArguments:
     parser = ArgumentParser(description='Daemon process for palette')
     parser.add_argument(
         '-c', '--config',
         type = str,
-        help = 'Config YAML file path.'
+        help = 'Config YAML file path (defaults to "$HOME/.config/palette/palette.yml").'
     )
     parser.add_argument(
         '-b', '--backend',
         type = str,
+        default = 'sxhkd',
         choices = ['none', 'sxhkd'],
-        help = f'Override backend to use for keybindings management'
+        help = f'Backend to use for keybindings management (defaults to "sxhkd")'
     )
     parser.add_argument(
         '-v', '--version',
@@ -55,7 +61,8 @@ def parse_arguments() -> CmdArguments:
     parser.add_argument(
         '-s', '--socket',
         type = str,
-        help = f'Override socket to listen for incoming connections'
+        default = '/tmp/palette_socket',
+        help = f'Socket to listen for incoming connections'
     )
     args = parser.parse_args()
     return CmdArguments(
@@ -72,9 +79,6 @@ def get_keybindings_manager(keybindings_backend: str) -> KeybindingsManager:
     if keybindings_backend == 'sxhkd':
         return Sxhkd('/tmp/palette_sxhkdrc')
     raise Exception('Unreachable')
-
-def get_default_config_path() -> str:
-    return f'{os.getenv("HOME")}/.config/palette/palette.yml'
 
 def run():
     cmd_arguments = parse_arguments()

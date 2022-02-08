@@ -39,9 +39,9 @@ Show version and exit.
 .B \-V, \-\-verbose
 Enable verbose output.
 .TP
-.B \-c, \-\-commands
-Path to the json file which contains all the commands \- this field is
-mandatory.
+.B \-c, \-\-config
+Configuration YAML file path (defaults to
+\[lq]$HOME/.config/palette/palette.yml\[rq]).
 .TP
 .B \-s, \-\-socket
 Socket to listen for incoming connections.
@@ -49,11 +49,17 @@ Socket to listen for incoming connections.
 .B \-b, \-\-backend
 Backend to use for keybindings management.
 Options are {\f[C]sxhkd\f[R], \f[C]none\f[R]}, default is
-\f[C]none\f[R].
+\f[C]sxhkd\f[R].
+.TP
+.B \-\-validate
+Validate configuration file and exit
 .SS PALETTE
 .PP
 \f[C]palette\f[R] controls the \f[C]paletted\f[R] daemon by
 communication with it through a socket.
+.TP
+.B help
+Show help message and exit.
 .TP
 .B show
 Show the command palette.
@@ -62,14 +68,14 @@ Show the command palette.
 Ask \f[C]paletted\f[R] to suicide.
 .TP
 .B reload
-Reload the commands json file.
+Reload the configuration YAML file.
 If a keybindings backend is running, the keybindings will also be
 updated accordingly.
 .SS CONFIGURING
 .PP
-\f[I]Palette\f[R] is configured through a JSON file, with each command
-containing a \f[I]\[lq]description\[rq]\f[R], \f[I]\[lq]exec\[rq]\f[R]
-string, and an optional \f[I]keybinding\f[R]:
+\f[I]Palette\f[R] is configured through a YAML file, with each command
+containing a \f[I]description\f[R], \f[I]exec\f[R] string, an optional
+\f[I]keybinding\f[R], and optional \f[I]meta\f[R] keywords:
 .IP
 .nf
 \f[C]

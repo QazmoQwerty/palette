@@ -14,7 +14,7 @@ The program is designed to also manage your keyboard shortcuts for you by creati
 
 ## Configuring
 
-*Palette* is configured through a JSON file, with each command containing a *"description"*, *"exec"* string, and an optional *keybinding*:
+*Palette* is configured through a YAML file, with each command containing a *description*, *exec* string, an optional *keybinding*, and optional *meta* keywords:
 
 ```
 description: A string describing the command.
@@ -23,23 +23,24 @@ keybinding [OPTIONAL]: Keybinding for the command. Note that the syntax for this
 meta [OPTIONAL]: Additional invisible search terms for the command.
 ```
 
-For an example configuration, see [here](examples/simple-example.json).
+For an example configuration, see [here](examples/simple-example.yml).
 
 ### Paletted
 
 ```
-usage: paletted [-h] -c COMMANDS -b {none,sxhkd} [-v] [-V] [-s SOCKET]
+usage: paletted [-h] [-c CONFIG] [-b {none,sxhkd}] [-v] [-V] [--validate] [-s SOCKET]
 
 Daemon process for palette
 
 optional arguments:
   -h, --help            show this help message and exit
-  -c COMMANDS, --commands COMMANDS
-                        Commands json file path
+  -c CONFIG, --config CONFIG
+                        Config YAML file path (defaults to "$HOME/.config/palette/palette.yml").
   -b {none,sxhkd}, --backend {none,sxhkd}
-                        Backend to use for keybindings management
+                        Backend to use for keybindings management (defaults to "sxhkd")
   -v, --version         Show version number and exit
   -V, --verbose         Enable verbose output
+  --validate            Validate configuration file and exit
   -s SOCKET, --socket SOCKET
                         Socket to listen for incoming connections
 ```
@@ -55,7 +56,7 @@ commands:
     help   - Show this help message and exit.
     show   - Show the command palette.
     quit   - Ask paletted to suicide.
-    reload - Reload the commands json file. 
+    reload - Reload the configuration YAML file. 
              If a keybindings backend is running, 
              the keybindings will also be updated accordingly.
 ```
