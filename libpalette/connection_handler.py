@@ -32,11 +32,13 @@ class PaletteConnectionHandler(ConnectionHandler):
     _commands_manager: CommandsManager
     _keybindings_manager: KeybindingsManager
     _rofi: Rofi
+    _configuration: Configuration
 
     def __init__(self, commands_manager: CommandsManager, keybindings_manager: KeybindingsManager, configuration: Configuration) -> None:
         self._commands_manager = commands_manager
         self._keybindings_manager = keybindings_manager
         self._rofi = Rofi(configuration)
+        self._configuration = configuration
     
     def _handle_no_arguments(self, args: List[str], connection: Connection) -> None:
         connection.send_error('No arguments given')
@@ -52,9 +54,17 @@ class PaletteConnectionHandler(ConnectionHandler):
         subprocess.Popen(['sh', '-c', command.exec_string])
     
     def _handle_show(self, args: List[str], connection: Connection) -> None:
-        identifier = self._rofi.show_palette(self._commands_manager.get_commands())
-        if identifier is not None:
-            self._execute_command(identifier)
+        self._rofi.show_palette(self._commands_manager.get_commands())
+        
+    def _handle_execute(self, args: List[str], connection: Connection) -> None:
+        if len(args) == 1:
+            connection.send_error('Invalid number of (expected 1)')
+        try:
+            command_id = CommandId(args[1])
+        except ValueError:
+            connection.send_error(f'{repr(args[0])} is not a valid command ID')
+            return
+        self._execute_command(command_id)
     
     def _handle_help(self, args: List[str], connection: Connection) -> None:
         if len(args) == 1:
@@ -75,11 +85,13 @@ class PaletteConnectionHandler(ConnectionHandler):
             'help': self._handle_help,
             'quit': self._handle_quit,
             'reload': self._handle_reload,
+            '__execute': self._handle_execute, # needed for internal use
         }.get(args[0]) or self._handle_unknown_command
     
     def handle_connection(self, connection: Connection) -> None:
         args = connection.recv_args()
-        print('Args:', args)
+        if self._configuration.verbose:
+            print('Args:', args)
         try:
             self._get_handler(args)(args, connection)
         except PaletteError as e:

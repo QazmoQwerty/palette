@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+function usage-error() {
+    echo "Error: $1" >&2
+    echo "Note that this is an internal script meant to be run as a rofi mode, you really shouldn't have too much of a reason to mess around with!" >&2
+    exit 1
+}
+
+if [[ -z "${PALETTE_ROFI_INPUT_PATH}" ]]; then
+    usage-error "PALETTE_ROFI_INPUT_PATH is not set." >&2
+fi
+
+if [[ -z "${PALETTE_SOCKET_PATH}" ]]; then
+    usage-error "PALETTE_SOCKET_PATH is not set." >&2
+fi
+
+case $ROFI_RETV in
+    0)
+        cat ${PALETTE_ROFI_INPUT_PATH}
+        rm ${PALETTE_ROFI_INPUT_PATH}
+        ;;
+    1)
+        coproc ( BSPWM_SOCKET=${PALETTE_SOCKET_PATH} bspc __execute $ROFI_INFO > /dev/null 2>1 )
+        ;;
+esac

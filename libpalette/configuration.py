@@ -1,9 +1,15 @@
-from typing import Optional, NamedTuple
+from typing import NamedTuple
 
 class Configuration(NamedTuple):
+    commands_path: str
+    keybindings_backend: str = 'none'
+    verbose: bool = False
+    socket_path: str = '/tmp/palette_socket'
+    rofi_script_input_path: str = '/tmp/palette-rofi-script_input'
+
     # TODO - more rofi customization
     opposite_align_commands_and_shortcuts: bool = True
-    rofi_window_width:   int  = 85
+    rofi_window_width: int  = 91
 
     # NOTE - modifier icons are not recommended as they are pretty ugly at the moment.
     use_modifier_icons:  bool = False

@@ -1,6 +1,6 @@
+import os
 import subprocess
-from os import remove
-from typing import Optional, Dict
+from typing import Iterable, Optional, Dict, List
 
 from libpalette.utils import remove_whitespace
 from libpalette.configuration import Configuration
@@ -12,11 +12,13 @@ class Rofi:
     def __init__(self, configuration: Configuration) -> None:
         self._configuration = configuration
     
-    def show_palette(self, commands: Dict[CommandId, Command]) -> Optional[CommandId]:
-        result = subprocess.run(['rofi', '-dmenu', '-i', '-p', 'palette', '-no-custom'], stdout=subprocess.PIPE, input=self._get_rofi_input(commands))
-        if result.returncode == 0 and result.stdout != b'\n':
-            return CommandId(result.stdout.decode()[0:COMMAND_ID_SIZE])
-        return None
+    def show_palette(self, commands: Dict[CommandId, Command]) -> None:
+        with open(self._configuration.rofi_script_input_path, 'wb') as file:
+            file.write(self._get_rofi_input(commands))
+        env_copy = os.environ.copy()
+        env_copy['PALETTE_SOCKET_PATH'] = self._configuration.socket_path
+        env_copy['PALETTE_ROFI_INPUT_PATH'] = self._configuration.rofi_script_input_path
+        subprocess.Popen(['rofi', '-modi', f'palette:palette-rofi-script', '-show', 'palette'], env=env_copy)
     
     def _opposite_align(self, left: str, right: str, length: int) -> str:
         return left + ' ' * (length - len(right) - len(left)) + right
@@ -36,7 +38,7 @@ class Rofi:
         )
     
     def _command_rofi_description(self, command: Command) -> str:
-        return f'{command.identifier}| ' + (
+        return (
             command.description if command.keybinding is None
             else self._opposite_align(
                 left = command.description,
@@ -46,10 +48,19 @@ class Rofi:
             else f'{command.description} {self._format_keybinding(command.keybinding)}'
         )
     
+    def _command_rofi_input(self, command: Command) -> str:
+        # TODO - add `meta` tag (b'\x1fmeta\x1fSOME_META')
+        return f'{self._command_rofi_description(command)}\0info\x1f{command.identifier}'
+
+    def _properly_sorted(self, commands: Iterable[Command]) -> List[Command]:
+        """Sorts the commands first by their last used time, and then by lexical order"""
+        sorting_key = lambda command: (-command.last_used.toordinal(), command.description.casefold())
+        return sorted(commands, key=sorting_key)
+
     def _get_rofi_input(self, commands: Dict[CommandId, Command]) -> bytes:
-        return '\n'.join(map(self._command_rofi_description,
-            sorted(
-                commands.values(),
-                key=lambda command: (-command.last_used.toordinal(), command.description.casefold())
-            )
-        )).encode()
+        return '\n'.join([
+            "\0prompt\x1fTODO - Choose a custom prompt",
+            "\0message\x1fTODO - Choose a custom message",
+            "\0no-custom\x1ftrue",
+            *map(self._command_rofi_input, self._properly_sorted(commands.values()))
+        ]).encode()

@@ -1,3 +1,4 @@
+from socket import socket
 from typing import NamedTuple
 from argparse import ArgumentParser
 
@@ -12,27 +13,23 @@ from libpalette.keybindings_manager import KeybindingsManager
 from libpalette.connection_handler import PaletteConnectionHandler
 from libpalette.keybindings_manager_mock import KeybindingsManagerMock
 
-class CmdArguments(NamedTuple):
-    commands_path: str
-    keybindings_backend: str
-    verbose: bool
-    socket_path: str
+def parse_arguments() -> Configuration:
+    DEFAULT_CONFIGURATION = Configuration('')
 
-def parse_arguments() -> CmdArguments:
     parser = ArgumentParser(description='Daemon process for palette')
     parser.add_argument(
         '-c', '--commands',
         type = str,
         required = True,
-        help = 'Commands json file path'
+        help = 'Commands json file path.'
     )
     parser.add_argument(
         '-b', '--backend',
         type = str,
         required = True,
-        default = 'none',
+        default = DEFAULT_CONFIGURATION.keybindings_backend,
         choices = ['none', 'sxhkd'],
-        help = 'Backend to use for keybindings management'
+        help = f'Backend to use for keybindings management (default is {DEFAULT_CONFIGURATION.keybindings_backend})'
     )
     parser.add_argument(
         '-v', '--version',
@@ -48,29 +45,33 @@ def parse_arguments() -> CmdArguments:
     parser.add_argument(
         '-s', '--socket',
         type = str,
-        default = '/tmp/palette_socket',
-        help = 'Socket to listen for incoming connections'
+        default = DEFAULT_CONFIGURATION.socket_path,
+        help = f'Socket to listen for incoming connections (default is {DEFAULT_CONFIGURATION.socket_path})'
     )
     args = parser.parse_args()
-    return CmdArguments(args.commands, args.backend, args.verbose, args.socket)
+    return Configuration(
+        commands_path = args.commands,
+        keybindings_backend = args.backend,
+        verbose = args.verbose,
+        socket_path = args.socket
+    )
 
-def get_keybindings_manager(args: CmdArguments) -> KeybindingsManager:
-    if args.keybindings_backend == 'none':
+def get_keybindings_manager(keybindings_backend: str) -> KeybindingsManager:
+    if keybindings_backend == 'none':
         return KeybindingsManagerMock()
-    if args.keybindings_backend == 'sxhkd':
+    if keybindings_backend == 'sxhkd':
         return Sxhkd('/tmp/palette_sxhkdrc')
     raise Exception('Unreachable')
 
 def run():
-    args = parse_arguments()
-    configuration = Configuration()
+    configuration = parse_arguments()
 
-    commands_manager = CommandsManager(args.commands_path)
-    keybindings_manager = get_keybindings_manager(args)
+    commands_manager = CommandsManager(configuration.commands_path)
+    keybindings_manager = get_keybindings_manager(configuration.keybindings_backend)
     keybindings_manager.load(commands_manager.get_commands().values())
     with keybindings_manager:
         connection_handler = PaletteConnectionHandler(commands_manager, keybindings_manager, configuration)
-        with UnixSocketServer(args.socket_path, connection_handler) as server:
+        with UnixSocketServer(configuration.socket_path, connection_handler) as server:
             server.run()
 
 def main() -> int:
