@@ -14,7 +14,7 @@ A command palette for your operating system
 
 The program is designed to also manage your keyboard shortcuts for you by creating its own instance of [sxhkd](https://github.com/baskerville/sxhkd) with a generated configuration.
 
-## Configuring
+### Configuring
 
 *Palette* is configured through a YAML file, with each command containing a *description*, *exec* string, an optional *keybinding*, and optional *meta* keywords:
 
