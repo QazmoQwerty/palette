@@ -18,8 +18,9 @@ The program is designed to also manage your keyboard shortcuts for you by creati
 
 ```
 description: A string describing the command.
-keybinding [OPTIONAL]: Keybinding for the command. Note that the syntax for this field is identical to sxhkd's keybinding syntax.
 exec: The string to execute with `sh -c EXEC_STRING` whenever the command is run.
+keybinding [OPTIONAL]: Keybinding for the command. Note that the syntax for this field is identical to sxhkd's keybinding syntax.
+meta [OPTIONAL]: Additional invisible search terms for the command.
 ```
 
 For an example configuration, see [here](examples/simple-example.json).

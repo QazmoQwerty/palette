@@ -1,8 +1,12 @@
 [
     {
         "description": "start file explorer",
+        "exec": "nemo"
+    },
+    {
+        "description": "start firefox",
         "exec": "nemo",
-        "meta": "metadata example"
+        "meta": "web browser"
     },
     {
         "description": "start alacritty",
