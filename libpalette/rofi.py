@@ -26,15 +26,15 @@ class Rofi:
         return left + ' ' * (length - len(right) - len(left)) + right
     
     def _format_keybinding(self, keybinding: str) -> str:
-        if not get_configuration()['modifier_icons']['is_active'].data:
+        if not get_configuration()['rofi']['modifier_icons']['is_active'].data:
             return f'[{keybinding}]'
         
         return ';'.join(
-            ''.join(
-                key.replace('alt', get_configuration()['modifier_icons']['alt'].data)
-                   .replace('ctrl', get_configuration()['modifier_icons']['ctrl'].data)
-                   .replace('super', get_configuration()['modifier_icons']['super'].data)
-                   .replace('shift', get_configuration()['modifier_icons']['shift'].data)
+            '+'.join(
+                key.replace('alt', get_configuration()['rofi']['modifier_icons']['alt'].data)
+                   .replace('ctrl', get_configuration()['rofi']['modifier_icons']['ctrl'].data)
+                   .replace('super', get_configuration()['rofi']['modifier_icons']['super'].data)
+                   .replace('shift', get_configuration()['rofi']['modifier_icons']['shift'].data)
                 for key in chord.split('+')
             ) for chord in remove_whitespace(keybinding).split(';')
         )

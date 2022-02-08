@@ -1,0 +1,43 @@
+# "Rofi" is a dmenu replacement which palette uses in order to show the popup window
+rofi:
+  # There are two ways to format things:
+  # 1) Both description and keybinding are aligned to the left:
+  #       | Command Description [super+shift+c]            |
+  # 2) Description aligned to the left, keybinding aligned to the right:
+  #       | Command Description            [super+shift+c] |
+  # If this field is set to `false`, the first option is used, otherwise we use the second option
+  opposite_align_commands_and_shortcuts: false
+
+  # The maximum number of chars which fit on a line in your Rofi theme.
+  # Only needed if `opposite_align_commands_and_shortcuts` is set to `true`, 
+  # but if it is then it is HIGHLY recommended you play around with this option until rofi looks nice.
+  window_width: 91
+
+  # Modifier Icons (EXPERIMENTAL)
+  # You can set custom string to be swapped for "ctrl"/"super"/etc when the keybinding are shown in rofi.
+  # This will only be done if `is_active` is `true`.
+  modifier_icons:
+    is_active: false
+    ctrl: "\ufb33"
+    shift: "\ufb35"
+    super: "\ufb32"
+    alt: "\ufb34"
+
+  # In order to use some of Rofi's more advanced features, Palette uses a custom Rofi modi script.
+  # Paletted generates the input for rofi and writes it to `input_path` before 
+  mode_script:
+    input_path: "/tmp/palette_rofi_script_input"
+
+commands:
+  # description: A string describing the command.
+  # exec: The string to execute with `sh -c EXEC_STRING` whenever the command is run.
+  # keybinding [OPTIONAL]: Keybinding for the command. NOTE - uses sxhkd's syntax.
+  # meta [OPTIONAL]: Additional invisible search terms for the command.
+  -
+    description: An example command
+    exec: notify-send "First example command was triggered!"
+  -
+    description: Another example command
+    keybinding: super+shift+e
+    exec: notify-send "Second example command was triggered!"
+    meta: invisible searchable keywords

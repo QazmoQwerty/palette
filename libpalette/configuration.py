@@ -25,18 +25,18 @@ class ConfigurationFactory:
 
         self._schema = Map({
             **subcategory('rofi', {
-                Optional('opposite_align_commands_and_shortcuts', default = True): Bool(),
+                Optional('opposite_align_commands_and_shortcuts', default = False): Bool(),
                 Optional('window_width', default = 91): Int(),
                 **subcategory('mode_script', {
-                    Optional('input_path', default = "/tmp/palette-rofi-script_input"): Str(),
+                    Optional('input_path', default = "/tmp/palette_rofi_script_input"): Str(),
                 }),
-            }),
-            **subcategory('modifier_icons', {
-                Optional('is_active', default = False): Bool(),
-                Optional('ctrl',  default = "\ufb33"): Str(),
-                Optional('shift', default = "\ufb35"): Str(),
-                Optional('super', default = "\ufb32"): Str(),
-                Optional('alt',   default = "\ufb34"): Str(),
+                **subcategory('modifier_icons', {
+                    Optional('is_active', default = False): Bool(),
+                    Optional('ctrl',  default = "\ufb33"): Str(),
+                    Optional('shift', default = "\ufb35"): Str(),
+                    Optional('super', default = "\ufb32"): Str(),
+                    Optional('alt',   default = "\ufb34"): Str(),
+                }),
             }),
             "commands": Seq(Map({
                 'description': Str(),

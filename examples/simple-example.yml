@@ -7,7 +7,7 @@ commands:
     exec: nemo
   -
     description: start firefox
-    exec: nemo,
+    exec: firefox
     meta: web browser
   -
     description: start alacritty
