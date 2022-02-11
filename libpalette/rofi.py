@@ -1,4 +1,5 @@
 import os
+import datetime
 import subprocess
 from typing import Iterable, Optional, Dict, List
 
@@ -62,7 +63,10 @@ class Rofi:
 
     def _properly_sorted(self, commands: Iterable[Command]) -> List[Command]:
         """Sorts the commands first by their last used time, and then by lexical order"""
-        sorting_key = lambda command: (-command.last_used.toordinal(), command.description.casefold())
+        sorting_key = lambda command: (
+            -command.last_used.timestamp() if command.last_used != datetime.datetime.min else 0,
+            command.description.casefold()
+        )
         return sorted(commands, key=sorting_key)
 
     def _get_rofi_input(self, commands: Dict[CommandId, Command]) -> bytes:
