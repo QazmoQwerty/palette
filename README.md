@@ -1,6 +1,6 @@
 # Palette
 
-A command palette for your operating system
+A command palette for your operating system.
 
 ![Demo](demo.gif)
 
