@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-BSPWM_SOCKET=${PALETTE_SOCKET-/tmp/palette_socket} bspc $@
+BSPWM_SOCKET=${PALETTE_SOCKET-/tmp/palette_socket} bspc "$@"
